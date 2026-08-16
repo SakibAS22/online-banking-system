@@ -2,6 +2,7 @@ package com.sakib.bank.dao.impl;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import com.sakib.bank.model.User;
 import com.sakib.bank.model.enums.UserRole;
@@ -9,17 +10,31 @@ import com.sakib.bank.model.enums.UserStatus;
 
 public class Test {
 
-	public static void main(String[] args) {
+	public static void main(String[] args)throws SQLException {
 		
-		User user= new User(453L, "Sakib A.Sankeshwarkar","sakibsankeshwarkar@gmail.com",
-					"7057453408","Sakib@999",UserRole.ADMIN, UserStatus.APPROVED,LocalDateTime.now(), LocalDateTime.now());
-		
-		UserDaoImpl usd= new UserDaoImpl();
-		try {
-			usd.saveUser(user);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+		 UserDaoImpl userDao = new UserDaoImpl();
+
+	        // First find the existing user
+	        User user = userDao.findById(453L).orElse(null);
+
+	        if (user == null) {
+	            System.out.println("User not found");
+	            return;
+	        }
+
+	        // Change some values
+	        user.setFullName("Sakib Updated");
+	        user.setPhoneNo("9876543210");
+
+	        // Update database
+	        boolean updated = userDao.updateUser(user);
+
+	        System.out.println("Update successful: " + updated);
+
+	        // Verify by reading from database again
+	        User updatedUser = userDao.findById(453L).orElse(null);
+
+	        System.out.println("Updated User:");
+	        System.out.println(updatedUser);
+}
 }
