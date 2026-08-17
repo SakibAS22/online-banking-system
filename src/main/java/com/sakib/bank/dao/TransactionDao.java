@@ -22,5 +22,4 @@ public interface TransactionDao {
             LocalDateTime startDate,
             LocalDateTime endDate) throws SQLException;
 
-    boolean deleteTransaction(Long transactionId) throws SQLException;
 }
