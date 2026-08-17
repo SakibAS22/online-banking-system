@@ -1,40 +1,41 @@
 package com.sakib.bank.dao.impl;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.util.Optional;
 
-import com.sakib.bank.model.User;
-import com.sakib.bank.model.enums.UserRole;
-import com.sakib.bank.model.enums.UserStatus;
+import com.sakib.bank.model.Account;
 
 public class Test {
 
-	public static void main(String[] args)throws SQLException {
-		
-		 UserDaoImpl userDao = new UserDaoImpl();
+    public static void main(String[] args) throws SQLException {
 
-	        // First find the existing user
-	        User user = userDao.findById(453L).orElse(null);
+        AccountDaoImpl accountDao = new AccountDaoImpl();
 
-	        if (user == null) {
-	            System.out.println("User not found");
-	            return;
-	        }
+        Long accountId = 1001L;
 
-	        // Change some values
-	        user.setFullName("Sakib Updated");
-	        user.setPhoneNo("9876543210");
+        // Check current balance
+        System.out.println("Before update:");
 
-	        // Update database
-	        boolean updated = userDao.updateUser(user);
+        accountDao.findAccountById(accountId)
+                .ifPresentOrElse(
+                        account -> System.out.println(account),
+                        () -> System.out.println("Account not found")
+                );
 
-	        System.out.println("Update successful: " + updated);
+        // Update balance
+        BigDecimal newBalance = new BigDecimal("7500.00");
 
-	        // Verify by reading from database again
-	        User updatedUser = userDao.findById(453L).orElse(null);
+        boolean updated = accountDao.updateBalance(accountId, newBalance);
 
-	        System.out.println("Updated User:");
-	        System.out.println(updatedUser);
-}
+        System.out.println("\nBalance update successful: " + updated);
+
+        // Check balance after update
+        System.out.println("\nAfter update:");
+
+        accountDao.findAccountById(accountId)
+                .ifPresentOrElse(
+                        account -> System.out.println(account),
+                        () -> System.out.println("Account not found")
+                );
+    }
 }
